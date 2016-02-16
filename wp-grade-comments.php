@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: WP Grade Comments
-Version: 1.0
+Version: 1.0.0
 Description: Grades and private comments for WordPress blog posts. Built for the City Tech OpenLab.
 Author: Boone Gorges
 Author URI: http://boone.gorg.es
@@ -15,7 +15,7 @@ define( 'OLGC_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 /**
  * Load textdomain.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 function olgc_load_plugin_textdomain() {
 	load_plugin_textdomain( 'wp-grade-comments' );
@@ -24,6 +24,8 @@ add_action( 'init', 'olgc_load_plugin_textdomain' );
 
 /**
  * Markup for the checkboxes on the Leave a Comment section.
+ *
+ * @since 1.0.0
  */
 function olgc_leave_comment_checkboxes() {
 	if ( ! olgc_is_instructor() ) {
@@ -43,6 +45,11 @@ add_action( 'comment_form_logged_in_after', 'olgc_leave_comment_checkboxes' );
 
 /**
  * Markup for the grade box on the Leave a Comment section.
+ *
+ * @since 1.0.0
+ *
+ * @param array $args Arguments from `comment_form()`.
+ * @return array
  */
 function olgc_leave_comment_after_comment_fields( $args ) {
 	if ( ! olgc_is_instructor() ) {
@@ -64,6 +71,11 @@ add_filter( 'comment_form_defaults', 'olgc_leave_comment_after_comment_fields', 
 
 /**
  * Catch and save values after comment submit.
+ *
+ * @since 1.0.0
+ *
+ * @param int        $comment_id ID of the comment.
+ * @param WP_Comment $comment    Comment object.
  */
 function olgc_insert_comment( $comment_id, $comment ) {
 	// Private
@@ -86,6 +98,12 @@ add_action( 'wp_insert_comment', 'olgc_insert_comment', 10, 2 );
 
 /**
  * Add 'Private' message, grade, and gloss to comment text.
+ *
+ * @since 1.0.0
+ *
+ * @param string     $text    Comment text.
+ * @param WP_Comment $comment Comment object.
+ * @return string
  */
 function olgc_add_private_info_to_comment_text( $text, $comment ) {
 	$grade = '';
@@ -119,6 +137,8 @@ add_filter( 'get_comment_text', 'olgc_add_private_info_to_comment_text', 100, 2 
 /**
  * Add a "Private" label to the Reply button on reply comments.
  *
+ * @since 1.0.0
+ *
  * @param array      $args    Arguments passed to `comment_reply_link()`.
  * @param WP_Comment $comment Comment object.
  */
@@ -135,6 +155,12 @@ add_filter( 'comment_reply_link_args', 'olgc_add_private_label_to_comment_reply_
 
 /**
  * Ensure that private comments are only included for the proper users.
+ *
+ * @since 1.0.0
+ *
+ * @param array            $clauses       SQL clauses from the comment query.
+ * @param WP_Comment_Query $comment_query Comment query object.
+ * @return array
  */
 function olgc_filter_private_comments( $clauses, $comment_query ) {
 	$post_id = 0;
@@ -163,8 +189,15 @@ add_filter( 'comments_clauses', 'olgc_filter_private_comments', 10, 2 );
 /**
  * Filter private comments out of the 'comments_array'
  *
- * This is called during comments_template, instead of the API. This is a damn
- * mess.
+ * This is called during comments_template, instead of the API. This is a damn mess.
+ *
+ * @todo This can be removed due to changes in WP 4.1 or something like that.
+ *
+ * @since 1.0.0
+ *
+ * @param array $comments Comment array.
+ * @param int   $post_id  ID of the post.
+ * @return array
  */
 function olgc_filter_comments_array( $comments, $post_id ) {
 	$pc_ids = olgc_get_inaccessible_comments( get_current_user_id(), $post_id );
@@ -184,6 +217,12 @@ add_filter( 'comments_array', 'olgc_filter_comments_array', 10, 2 );
  * Get inaccessible comments for a user.
  *
  * Optionally by post ID.
+ *
+ * @since 1.0.0
+ *
+ * @param int $user_id ID of the user.
+ * @param int $post_id Optional. ID of the post.
+ * @return array Array of comment IDs.
  */
 function olgc_get_inaccessible_comments( $user_id, $post_id = 0 ) {
 	// Get a list of private comments
@@ -230,6 +269,12 @@ function olgc_get_inaccessible_comments( $user_id, $post_id = 0 ) {
 
 /**
  * Filter comment count. Not cool.
+ *
+ * @since 1.0.0
+ *
+ * @param int $count   Comment counte.
+ * @param int $post_id ID of the post.
+ * @return int
  */
 function olgc_get_comments_number( $count, $post_id = 0 ) {
 	if ( empty( $post_id ) ) {
@@ -248,7 +293,9 @@ function olgc_get_comments_number( $count, $post_id = 0 ) {
 add_filter( 'get_comments_number', 'olgc_get_comments_number', 10, 2 );
 
 /**
- * Enqueue assets
+ * Enqueue assets.
+ *
+ * @since 1.0.0
  */
 function olgc_enqueue_assets() {
 	wp_enqueue_style( 'wp-grade-comments', OLGC_PLUGIN_URL . 'assets/css/wp-grade-comments.css' );
@@ -258,6 +305,10 @@ add_action( 'comment_form_before', 'olgc_enqueue_assets' );
 
 /**
  * Is the current user the course instructor?
+ *
+ * @since 1.0.0
+ *
+ * @return bool
  */
 function olgc_is_instructor() {
 	$is_admin = current_user_can( 'manage_options' );
@@ -272,6 +323,11 @@ function olgc_is_instructor() {
 
 /**
  * Is the current user the post author?
+ *
+ * @since 1.0.0
+ *
+ * @param int $post_id Optional. ID of the post. Defaults to current post ID.
+ * @return bool
  */
 function olgc_is_author( $post_id = null ) {
 	if ( $post_id ) {
@@ -292,6 +348,10 @@ function olgc_is_author( $post_id = null ) {
  *
  * For now, we are going with the sledgehammer of deleting the comment altogether. In the
  * future, we could use hide_sitewide.
+ *
+ * @since 1.0.0
+ *
+ * @param int $comment_id ID of the comment.
  */
 function olgc_prevent_private_comments_from_creating_bp_activity_items( $comment_id ) {
 	$is_private = get_comment_meta( $comment_id, 'olgc_is_private', true );
@@ -309,12 +369,14 @@ function olgc_prevent_private_comments_from_creating_bp_activity_items( $comment
 add_action( 'comment_post', 'olgc_prevent_private_comments_from_creating_bp_activity_items', 0 );
 add_action( 'edit_comment', 'olgc_prevent_private_comments_from_creating_bp_activity_items', 0 );
 
-
-
 /** Admin ********************************************************************/
 
 /**
  * Add Grade column to wp-admin Posts list.
+ *
+ * @since 1.0.0
+ *
+ * @param array $columns Column info.
  */
 function olgc_add_grade_column( $columns ) {
 	if ( ! olgc_is_instructor() ) {
@@ -328,6 +390,11 @@ add_filter( 'manage_post_posts_columns', 'olgc_add_grade_column' );
 
 /**
  * Content of the Grade column.
+ *
+ * @since 1.0.0
+ *
+ * @param string $column_name Name of the current column.
+ * @param int    $post_id     ID of the post for the current row.
  */
 function olgc_add_grade_column_content( $column_name, $post_id ) {
 	if ( ! olgc_is_instructor() ) {
