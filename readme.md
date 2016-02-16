@@ -11,4 +11,4 @@ When reading posts while logged in as an Administrator, the comment reply form w
 
 ## About
 
-This plugin was developed for the [https://openlab.citytech.cuny.edu City Tech Open Lab].
+This plugin was developed for the [https://openlab.citytech.cuny.edu](City Tech Open Lab).
