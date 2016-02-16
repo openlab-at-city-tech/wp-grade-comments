@@ -7,11 +7,20 @@ Author: Boone Gorges
 Author URI: http://boone.gorg.es
 Plugin URI: http://openlab.citytech.cuny.edu
 Text Domain: wp-grade-comments
-Domain Path: /languages
 */
 
 define( 'OLGC_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'OLGC_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+
+/**
+ * Load textdomain.
+ *
+ * @since 1.0
+ */
+function olgc_load_plugin_textdomain() {
+	load_plugin_textdomain( 'wp-grade-comments' );
+}
+add_action( 'init', 'olgc_load_plugin_textdomain' );
 
 /**
  * Markup for the checkboxes on the Leave a Comment section.
