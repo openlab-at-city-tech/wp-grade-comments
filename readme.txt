@@ -23,6 +23,12 @@ This plugin was developed for the [https://openlab.citytech.cuny.edu](City Tech 
 1. Install and activate from Dashboard > Plugins.
 2. That's it.
 
+== Screenshots ==
+
+1. Comment display form. Only administrators see this form.
+2. Grades are always private, even in public comments.
+3. Grades are visible on Dashboard > Posts.
+
 == Changelog ==
 
 = 1.0 =
