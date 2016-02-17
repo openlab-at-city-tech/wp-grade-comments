@@ -1,4 +1,4 @@
-=== Openlab-grade-comments ===
+=== WP Grade Comments ===
 Contributors: boonebgorges
 Tags: comments, grade, course, privacy
 Requires at least: 4.0
