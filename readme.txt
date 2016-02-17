@@ -3,7 +3,7 @@ Contributors: boonebgorges
 Tags: comments, grade, course, privacy
 Requires at least: 4.0
 Tested up to: 4.4
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -31,5 +31,8 @@ This plugin was developed for the [https://openlab.citytech.cuny.edu](City Tech 
 
 == Changelog ==
 
-= 1.0 =
+= 1.0.1 =
+* Fix name of plugin in readme header
+
+= 1.0.0 =
 * Initial release
