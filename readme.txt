@@ -16,7 +16,7 @@ When reading posts while logged in as an Administrator, the comment reply form w
 1. "Make this comment private" - When checked, only site Administrators and the author of the current post will be able to see the comment. Threaded to private comments, whether left by an admin or by the post author, are always private as well.
 1. "Add a grade" - When checked, a Grade field will appear. Grades can appear in private or public comments, while the grade itself will always be private (visible only to the Administrator and the post author). Grades are also visible to administrators as a new column in Dashboard > Posts.
 
-This plugin was developed for the [https://openlab.citytech.cuny.edu](City Tech Open Lab).
+This plugin was developed for the [https://openlab.citytech.cuny.edu](City Tech OpenLab).
 
 == Installation ==
 
