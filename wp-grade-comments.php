@@ -187,33 +187,6 @@ function olgc_filter_private_comments( $clauses, $comment_query ) {
 add_filter( 'comments_clauses', 'olgc_filter_private_comments', 10, 2 );
 
 /**
- * Filter private comments out of the 'comments_array'
- *
- * This is called during comments_template, instead of the API. This is a damn mess.
- *
- * @todo This can be removed due to changes in WP 4.1 or something like that.
- *
- * @since 1.0.0
- *
- * @param array $comments Comment array.
- * @param int   $post_id  ID of the post.
- * @return array
- */
-function olgc_filter_comments_array( $comments, $post_id ) {
-	$pc_ids = olgc_get_inaccessible_comments( get_current_user_id(), $post_id );
-
-	foreach ( $comments as $ckey => $cvalue ) {
-		if ( in_array( $cvalue->comment_ID, $pc_ids ) ) {
-			unset( $comments[ $ckey ] );
-		}
-	}
-
-	$comments = array_values( $comments );
-	return $comments;
-}
-add_filter( 'comments_array', 'olgc_filter_comments_array', 10, 2 );
-
-/**
  * Filter comments out of comment feeds.
  *
  * @since 1.0.2

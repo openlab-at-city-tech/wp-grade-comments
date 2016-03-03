@@ -35,6 +35,7 @@ This plugin was developed for the [https://openlab.citytech.cuny.edu](City Tech 
 * Ensure that comment privacy is respected for trashed comments
 * Prevent non-admins from editing comments that are private or contain grades, even when they are the post author
 * Ensure that comment privacy is respected in feeds
+* Ensure that all private comments are visible to all administrators, not just the comment author
 
 = 1.0.1 =
 * Fix name of plugin in readme header
