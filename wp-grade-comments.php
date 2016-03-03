@@ -214,6 +214,24 @@ function olgc_filter_comments_array( $comments, $post_id ) {
 add_filter( 'comments_array', 'olgc_filter_comments_array', 10, 2 );
 
 /**
+ * Filter comments out of comment feeds.
+ *
+ * @since 1.0.2
+ *
+ * @param string $where WHERE clause from comment feed query.
+ * @return string
+ */
+function olgc_filter_comments_from_feed( $where ) {
+	$pc_ids = olgc_get_inaccessible_comments( get_current_user_id(), get_queried_object_id() );
+	if ( $pc_ids ) {
+		$where .= ' AND comment_ID NOT IN (' . implode( ',', array_map( 'intval', $pc_ids ) ) . ')';
+	}
+
+	return $where;
+}
+add_filter( 'comment_feed_where', 'olgc_filter_comments_from_feed' );
+
+/**
  * Get inaccessible comments for a user.
  *
  * Optionally by post ID.
