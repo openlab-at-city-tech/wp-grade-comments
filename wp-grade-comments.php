@@ -345,6 +345,26 @@ function olgc_is_author( $post_id = null ) {
 }
 
 /**
+ * Prevent non-instructors from editing comments that are private or have grades.
+ *
+ * @since 1.0.2
+ */
+function olgc_prevent_edit_comment_for_olgc_comments( $caps, $cap, $user_id, $args ) {
+	if ( 'edit_comment' === $cap && ! olgc_is_instructor( $user_id ) ) {
+		$comment_id = $args[0];
+		$is_private = get_comment_meta( $comment_id, 'olgc_is_private', true );
+		$grade      = get_comment_meta( $comment_id, 'olgc_grade', true );
+		if ( $is_private || $grade ) {
+			$caps = array( 'do_not_allow' );
+		}
+	}
+
+	return $caps;
+
+}
+add_filter( 'map_meta_cap', 'olgc_prevent_edit_comment_for_olgc_comments', 10, 4 );
+
+/**
  * Prevent private comments from appearing in BuddyPress activity streams.
  *
  * For now, we are going with the sledgehammer of deleting the comment altogether. In the
