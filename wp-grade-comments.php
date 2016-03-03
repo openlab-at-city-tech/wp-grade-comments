@@ -234,6 +234,7 @@ function olgc_get_inaccessible_comments( $user_id, $post_id = 0 ) {
 				'value' => '1',
 			),
 		),
+		'status' => 'any',
 	);
 
 	if ( ! empty( $post_id ) ) {

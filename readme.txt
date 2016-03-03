@@ -31,6 +31,9 @@ This plugin was developed for the [https://openlab.citytech.cuny.edu](City Tech 
 
 == Changelog ==
 
+= 1.0.2 =
+* Ensure that comment privacy is respected for trashed comments
+
 = 1.0.1 =
 * Fix name of plugin in readme header
 
