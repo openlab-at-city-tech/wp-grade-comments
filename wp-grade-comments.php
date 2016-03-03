@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: WP Grade Comments
-Version: 1.0.1
+Version: 1.0.2
 Description: Grades and private comments for WordPress blog posts. Built for the City Tech OpenLab.
 Author: Boone Gorges
 Author URI: http://boone.gorg.es
@@ -187,31 +187,22 @@ function olgc_filter_private_comments( $clauses, $comment_query ) {
 add_filter( 'comments_clauses', 'olgc_filter_private_comments', 10, 2 );
 
 /**
- * Filter private comments out of the 'comments_array'
+ * Filter comments out of comment feeds.
  *
- * This is called during comments_template, instead of the API. This is a damn mess.
+ * @since 1.0.2
  *
- * @todo This can be removed due to changes in WP 4.1 or something like that.
- *
- * @since 1.0.0
- *
- * @param array $comments Comment array.
- * @param int   $post_id  ID of the post.
- * @return array
+ * @param string $where WHERE clause from comment feed query.
+ * @return string
  */
-function olgc_filter_comments_array( $comments, $post_id ) {
-	$pc_ids = olgc_get_inaccessible_comments( get_current_user_id(), $post_id );
-
-	foreach ( $comments as $ckey => $cvalue ) {
-		if ( in_array( $cvalue->comment_ID, $pc_ids ) ) {
-			unset( $comments[ $ckey ] );
-		}
+function olgc_filter_comments_from_feed( $where ) {
+	$pc_ids = olgc_get_inaccessible_comments( get_current_user_id(), get_queried_object_id() );
+	if ( $pc_ids ) {
+		$where .= ' AND comment_ID NOT IN (' . implode( ',', array_map( 'intval', $pc_ids ) ) . ')';
 	}
 
-	$comments = array_values( $comments );
-	return $comments;
+	return $where;
 }
-add_filter( 'comments_array', 'olgc_filter_comments_array', 10, 2 );
+add_filter( 'comment_feed_where', 'olgc_filter_comments_from_feed' );
 
 /**
  * Get inaccessible comments for a user.
@@ -234,6 +225,7 @@ function olgc_get_inaccessible_comments( $user_id, $post_id = 0 ) {
 				'value' => '1',
 			),
 		),
+		'status' => 'any',
 	);
 
 	if ( ! empty( $post_id ) ) {
@@ -342,6 +334,26 @@ function olgc_is_author( $post_id = null ) {
 
 	return is_user_logged_in() && get_current_user_id() == $post->post_author;
 }
+
+/**
+ * Prevent non-instructors from editing comments that are private or have grades.
+ *
+ * @since 1.0.2
+ */
+function olgc_prevent_edit_comment_for_olgc_comments( $caps, $cap, $user_id, $args ) {
+	if ( 'edit_comment' === $cap && ! olgc_is_instructor( $user_id ) ) {
+		$comment_id = $args[0];
+		$is_private = get_comment_meta( $comment_id, 'olgc_is_private', true );
+		$grade      = get_comment_meta( $comment_id, 'olgc_grade', true );
+		if ( $is_private || $grade ) {
+			$caps = array( 'do_not_allow' );
+		}
+	}
+
+	return $caps;
+
+}
+add_filter( 'map_meta_cap', 'olgc_prevent_edit_comment_for_olgc_comments', 10, 4 );
 
 /**
  * Prevent private comments from appearing in BuddyPress activity streams.

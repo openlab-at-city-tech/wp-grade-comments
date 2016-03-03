@@ -1,9 +1,9 @@
 === WP Grade Comments ===
 Contributors: boonebgorges
 Tags: comments, grade, course, privacy
-Requires at least: 4.0
+Requires at least: 4.1
 Tested up to: 4.4
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -30,6 +30,12 @@ This plugin was developed for the [https://openlab.citytech.cuny.edu](City Tech 
 3. Grades are visible on Dashboard > Posts.
 
 == Changelog ==
+
+= 1.0.2 =
+* Ensure that comment privacy is respected for trashed comments
+* Prevent non-admins from editing comments that are private or contain grades, even when they are the post author
+* Ensure that comment privacy is respected in feeds
+* Ensure that all private comments are visible to all administrators, not just the comment author
 
 = 1.0.1 =
 * Fix name of plugin in readme header
