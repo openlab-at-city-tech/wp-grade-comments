@@ -1,7 +1,7 @@
 === WP Grade Comments ===
 Contributors: boonebgorges
 Tags: comments, grade, course, privacy
-Requires at least: 4.0
+Requires at least: 4.1
 Tested up to: 4.4
 Stable tag: 1.0.1
 License: GPLv3
