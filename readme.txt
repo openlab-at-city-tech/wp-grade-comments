@@ -32,7 +32,7 @@ This plugin was developed for the [https://openlab.citytech.cuny.edu](City Tech 
 == Changelog ==
 
 = 1.1.0 =
-* Allow grade to be edited when editing comment via Dashboard.
+* Allow grade and privacy to be edited when editing comment via Dashboard.
 
 = 1.0.2 =
 * Ensure that comment privacy is respected for trashed comments

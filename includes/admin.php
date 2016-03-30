@@ -70,21 +70,27 @@ function olgc_add_grade_column_content( $column_name, $post_id ) {
  * @param WP_Comment $comment Comment object.
  */
 function olgc_register_meta_boxes( $comment ) {
-	// Grade meta box is visible to instructor or post author.
-	$comment_post = get_post( $comment->comment_post_ID );
-	if ( ! olgc_is_instructor() && ( empty( $comment_post->post_author ) || $comment_post->post_author !== get_current_user_id() ) ) {
-		return;
-	}
-
 	wp_enqueue_style( 'olgc-meta-boxes', OLGC_PLUGIN_URL . '/assets/css/meta-boxes.css' );
 
-	add_meta_box(
-		'olgc-comment-grade',
-		__( 'Grade', 'wp-grade-comments' ),
-		'olgc_grade_meta_box',
-		'comment',
-		'normal'
-	);
+	if ( olgc_is_instructor() || ( ! empty( $comment_post->post_author ) && $comment_post->post_author == get_current_user_id() ) ) {
+		add_meta_box(
+			'olgc-comment-grade',
+			__( 'Grade', 'wp-grade-comments' ),
+			'olgc_grade_meta_box',
+			'comment',
+			'normal'
+		);
+	}
+
+	if ( olgc_is_instructor() ) {
+		add_meta_box(
+			'olgc-comment-privacy',
+			__( 'Privacy', 'wp-grade-comments' ),
+			'olgc_privacy_meta_box',
+			'comment',
+			'normal'
+		);
+	}
 }
 
 /**
@@ -102,7 +108,6 @@ function olgc_grade_meta_box( $comment ) {
 	}
 
 	$grade = get_comment_meta( $comment->comment_ID, 'olgc_grade', true );
-	var_Dump( $grade );
 
 	?>
 	<table class="form-table editcomment">
@@ -121,6 +126,23 @@ function olgc_grade_meta_box( $comment ) {
 }
 
 /**
+ * Render the Privacy meta box.
+ *
+ * @since 1.1.0
+ *
+ * @param WP_Comment $comment Comment object.
+ */
+function olgc_privacy_meta_box( $comment ) {
+	$is_private = get_comment_meta( $comment->comment_ID, 'olgc_is_private', true );
+
+	?>
+	<input type="checkbox" value="1" <?php checked( $is_private ); ?> id="olgc-privacy" name="olgc-privacy" /> <label for="olgc-privacy"><?php esc_html_e( 'Make this comment private.', 'wp-grade-comments' ); ?></label>
+	<p class="description"><?php esc_html_e( 'Private comments are visible only to instructors and to the post\'s author.', 'wp-grade-comments' ); ?></p>
+	<?php wp_nonce_field( 'olgc-privacy-edit-' . $comment->comment_ID, 'olgc_privacy_edit_nonce' ); ?>
+	<?php
+}
+
+/**
  * Save grade settings when saving comment from the admin.
  *
  * @since 1.1.0
@@ -133,14 +155,17 @@ function olgc_save_comment_extras( $comment_id ) {
 		return;
 	}
 
-	// CSRF check.
-	if ( ! isset( $_POST['olgc_grade_edit_nonce'] ) || ! wp_verify_nonce( $_POST['olgc_grade_edit_nonce'], 'olgc-grade-edit-' . $comment_id ) ) {
-		return;
+	if ( isset( $_POST['olgc_grade_edit_nonce'] ) && wp_verify_nonce( $_POST['olgc_grade_edit_nonce'], 'olgc-grade-edit-' . $comment_id ) ) {
+		// Sanitize and update.
+		if ( isset( $_POST['olgc-grade'] ) ) {
+			$grade = wp_unslash( $_POST['olgc-grade'] );
+			update_comment_meta( $comment_id, 'olgc_grade', $grade );
+		}
 	}
 
-	// Sanitize and update.
-	if ( isset( $_POST['olgc-grade'] ) ) {
-		$grade = wp_unslash( $_POST['olgc-grade'] );
-		update_comment_meta( $comment_id, 'olgc_grade', $grade );
+	if ( isset( $_POST['olgc_privacy_edit_nonce'] ) && wp_verify_nonce( $_POST['olgc_privacy_edit_nonce'], 'olgc-privacy-edit-' . $comment_id ) ) {
+		// Sanitize and update.
+		$private = (int) ! empty( $_POST['olgc-privacy'] );
+		update_comment_meta( $comment_id, 'olgc_is_private', $private );
 	}
 }
