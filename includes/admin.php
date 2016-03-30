@@ -22,11 +22,36 @@ add_action( 'edit_comment', 'olgc_save_comment_extras' );
  * @param array $columns Column info.
  */
 function olgc_add_grade_column( $columns ) {
-	if ( ! olgc_is_instructor() ) {
-		return $columns;
+	global $wp_query;
+
+	$show_column = olgc_is_instructor();
+	if ( ! $show_column ) {
+		// Look ahead to see if any posts have grades.
+		foreach ( $wp_query->posts as $post ) {
+			// Skip posts not written by the current user.
+			if ( get_current_user_id() != $post->post_author ) {
+				continue;
+			}
+
+			// Find the first available grade on a post comment.
+			$comments = get_comments( array(
+				'post_id' => $post->ID,
+			) );
+
+			foreach ( $comments as $comment ) {
+				$grade = get_comment_meta( $comment->comment_ID, 'olgc_grade', true );
+				if ( $grade ) {
+					$show_column = true;
+					break 2;
+				}
+			}
+		}
 	}
 
-	$columns['grade'] = __( 'Grade', 'wp-grade-comments' );
+	if ( $show_column ) {
+		$columns['grade'] = __( 'Grade', 'wp-grade-comments' );
+	}
+
 	return $columns;
 }
 
@@ -39,11 +64,13 @@ function olgc_add_grade_column( $columns ) {
  * @param int    $post_id     ID of the post for the current row.
  */
 function olgc_add_grade_column_content( $column_name, $post_id ) {
-	if ( ! olgc_is_instructor() ) {
+	if ( 'grade' !== $column_name ) {
 		return;
 	}
 
-	if ( 'grade' !== $column_name ) {
+	// Only instructors and post authors should see grade.
+	$post = get_post( $post_id );
+	if ( ! olgc_is_instructor() && ( ! $post || get_current_user_id() != $post->post_author ) ) {
 		return;
 	}
 
