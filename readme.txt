@@ -33,6 +33,7 @@ This plugin was developed for the [https://openlab.citytech.cuny.edu](City Tech 
 
 = 1.1.0 =
 * Allow grade and privacy to be edited when editing comment via Dashboard.
+* Allow non-instructors to see their own grades on Dashboard > Posts.
 
 = 1.0.2 =
 * Ensure that comment privacy is respected for trashed comments
