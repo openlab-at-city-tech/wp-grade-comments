@@ -110,8 +110,11 @@ add_action( 'wp_insert_comment', 'olgc_insert_comment', 10, 2 );
  * @return string
  */
 function olgc_add_private_info_to_comment_text( $text, $comment ) {
+	global $pagenow;
+
+	// Grade has its own column on edit-comments.php.
 	$grade = '';
-	if ( olgc_is_instructor() || olgc_is_author() ) {
+	if ( 'edit-comments.php' !== $pagenow && ( olgc_is_instructor() || olgc_is_author() ) ) {
 		$grade = get_comment_meta( $comment->comment_ID, 'olgc_grade', true );
 		if ( $grade ) {
 			$text .= '<div class="olgc-grade-display"><span class="olgc-grade-label">' . __( 'Grade (Private):', 'wp-grade-comments' ) . '</span> ' . esc_html( $grade ) . '</div>';

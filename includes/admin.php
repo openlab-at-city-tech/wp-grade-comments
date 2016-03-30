@@ -10,6 +10,10 @@
 add_filter( 'manage_post_posts_columns', 'olgc_add_grade_column' );
 add_action( 'manage_post_posts_custom_column', 'olgc_add_grade_column_content', 10, 2 );
 
+// Grade column on edit-comments.php.
+add_filter( 'manage_edit-comments_columns', 'olgc_add_grade_column_to_editcomments' );
+add_action( 'manage_comments_custom_column', 'olgc_add_grade_column_content_to_editcomments', 10, 2 );
+
 // Comment editing.
 add_action( 'add_meta_boxes_comment', 'olgc_register_meta_boxes' );
 add_action( 'edit_comment', 'olgc_save_comment_extras' );
@@ -56,7 +60,7 @@ function olgc_add_grade_column( $columns ) {
 }
 
 /**
- * Content of the Grade column.
+ * Content of the Grade column on Dashboard > Posts.
  *
  * @since 1.0.0
  *
@@ -86,6 +90,67 @@ function olgc_add_grade_column_content( $column_name, $post_id ) {
 			echo esc_html( $grade );
 			break;
 		}
+	}
+}
+
+/**
+ * Add Grade column to wp-admin Comments list.
+ *
+ * @since 1.1.0
+ *
+ * @param array $columns Column info.
+ */
+function olgc_add_grade_column_to_editcomments( $columns ) {
+	global $wp_list_table;
+
+	// Non-instructors only see column if there's something to show.
+	$show_column = olgc_is_instructor();
+	if ( ! $show_column ) {
+		foreach ( $wp_list_table->items as $comment ) {
+			// Skip posts not written by the current user.
+			$post = get_post( $comment->comment_post_ID );
+			if ( ! $post || get_current_user_id() != $post->post_author ) {
+				continue;
+			}
+
+			$grade = get_comment_meta( $comment->comment_ID, 'olgc_grade', true );
+			if ( $grade ) {
+				$show_column = true;
+				break;
+			}
+		}
+	}
+
+	if ( $show_column ) {
+		$columns['grade'] = __( 'Grade', 'wp-grade-comments' );
+	}
+
+	return $columns;
+}
+
+/**
+ * Content of the Grade column on Dashboard > Comments.
+ *
+ * @since 1.1.0
+ *
+ * @param string $column_name Name of the current column.
+ * @param int    $comment_id  ID of the comment for the current row.
+ */
+function olgc_add_grade_column_content_to_editcomments( $column_name, $comment_id ) {
+	if ( 'grade' !== $column_name ) {
+		return;
+	}
+
+	// Only instructors and post authors should see grade.
+	$comment = get_comment( $comment_id );
+	$post    = get_post( $comment->comment_post_ID );
+	if ( ! olgc_is_instructor() && ( ! $post || get_current_user_id() != $post->post_author ) ) {
+		return;
+	}
+
+	$grade = get_comment_meta( $comment->comment_ID, 'olgc_grade', true );
+	if ( $grade ) {
+		echo esc_html( $grade );
 	}
 }
 
