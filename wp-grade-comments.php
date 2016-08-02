@@ -381,8 +381,10 @@ function olgc_prevent_private_comments_from_creating_bp_activity_items( $comment
 
 	if ( 'comment_post' === current_action() ) {
 		remove_action( 'comment_post', 'bp_blogs_record_comment', 10, 2 );
+		remove_action( 'comment_post', 'bp_activity_post_type_comment', 10, 2 );
 	} else if ( 'edit_comment' === current_action() ) {
 		remove_action( 'edit_comment', 'bp_blogs_record_comment', 10 );
+		remove_action( 'edit_comment', 'bp_activity_post_type_comment', 10 );
 	}
 }
 add_action( 'comment_post', 'olgc_prevent_private_comments_from_creating_bp_activity_items', 0 );
