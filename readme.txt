@@ -31,6 +31,10 @@ This plugin was developed for the [https://openlab.citytech.cuny.edu](City Tech 
 
 == Changelog ==
 
+= 1.1.2 =
+* Fix bug that caused labels not to display properly on some themes.
+* Fix PHP notice.
+
 = 1.1.1 =
 * Improve compatibility with recent versions of BuddyPress.
 
