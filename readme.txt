@@ -1,8 +1,8 @@
 === WP Grade Comments ===
 Contributors: boonebgorges
 Tags: comments, grade, course, privacy
-Requires at least: 4.1
-Tested up to: 4.6
+Requires at least: 4.4
+Tested up to: 4.7
 Stable tag: 1.1.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -31,7 +31,10 @@ This plugin was developed for the [https://openlab.citytech.cuny.edu](City Tech 
 
 == Changelog ==
 
-= 1.1.2 =
+= 1.2.0 =
+* Better support for query edge cases.
+* Now requires WP 4.4+.
+* On front-end, grades are now shown via show/hide toggle.
 * Fix bug that prevented grades of 0 from being saved and displayed.
 * Fix bug that caused labels not to display properly on some themes.
 * Fix PHP notice.
