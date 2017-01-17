@@ -172,19 +172,15 @@ function olgc_add_private_label_to_comment_reply_link( $args, $comment ) {
 add_filter( 'comment_reply_link_args', 'olgc_add_private_label_to_comment_reply_link', 10, 2 );
 
 /**
- * Ensure that private comments are only included for the proper users.
+ * Remove private comments via WP_Comment_Query query args.
  *
- * @since 1.0.0
- *
- * @param array            $clauses       SQL clauses from the comment query.
- * @param WP_Comment_Query $comment_query Comment query object.
- * @return array
+ * @since 1.2.0
  */
-function olgc_filter_private_comments( $clauses, $comment_query ) {
+function olgc_remove_private_comments( WP_Comment_Query $comment_query ) {
 	$post_id = 0;
 	if ( ! empty( $comment_query->query_vars['post_id'] ) ) {
 		$post_id = $comment_query->query_vars['post_id'];
-	} else if ( ! empty( $comment_query->query_vars['post_ID'] ) ) {
+	} elseif ( ! empty( $comment_query->query_vars['post_ID'] ) ) {
 		$post_id = $comment_query->query_vars['post_ID'];
 	}
 
@@ -194,15 +190,15 @@ function olgc_filter_private_comments( $clauses, $comment_query ) {
 	}
 
 	$pc_ids = olgc_get_inaccessible_comments( get_current_user_id(), $post_id );
-
-	// WP_Comment_Query sucks
-	if ( ! empty( $pc_ids ) ) {
-		$clauses['where'] .= ' AND comment_ID NOT IN (' . implode( ',', $pc_ids ) . ')';
+	if ( ! $pc_ids ) {
+		return;
 	}
 
-	return $clauses;
+	$not__in = (array) $comment_query->query_vars['comment__not_in'];
+	$not__in = array_merge( $not__in, $pc_ids );
+	$comment_query->query_vars['comment__not_in'] = $not__in;
 }
-add_filter( 'comments_clauses', 'olgc_filter_private_comments', 10, 2 );
+add_action( 'pre_get_comments', 'olgc_remove_private_comments' );
 
 /**
  * Filter comments out of comment feeds.
@@ -235,7 +231,8 @@ add_filter( 'comment_feed_where', 'olgc_filter_comments_from_feed' );
  */
 function olgc_get_inaccessible_comments( $user_id, $post_id = 0 ) {
 	// Get a list of private comments
-	remove_filter( 'comments_clauses', 'olgc_filter_private_comments', 10, 2 );
+	remove_action( 'pre_get_comments', 'olgc_remove_private_comments' );
+
 	$comment_args = array(
 		'meta_query' => array(
 			array(
@@ -251,7 +248,8 @@ function olgc_get_inaccessible_comments( $user_id, $post_id = 0 ) {
 	}
 
 	$private_comments = get_comments( $comment_args );
-	add_filter( 'comments_clauses', 'olgc_filter_private_comments', 10, 2 );
+
+	add_action( 'pre_get_comments', 'olgc_remove_private_comments' );
 
 	// Filter out the ones that are written by the logged-in user, as well
 	// as those that are attached to a post that the user is the author of
