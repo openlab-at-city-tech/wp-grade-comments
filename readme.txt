@@ -35,6 +35,7 @@ This plugin was developed for the [https://openlab.citytech.cuny.edu](City Tech 
 * Better support for query edge cases.
 * Now requires WP 4.4+.
 * On front-end, grades are now shown via show/hide toggle.
+* Fix bug that caused untrashed private comments to generate BuddyPress activity items.
 * Fix bug that prevented grades of 0 from being saved and displayed.
 * Fix bug that caused labels not to display properly on some themes.
 * Fix PHP notice.
