@@ -186,7 +186,7 @@ function olgc_remove_private_comments( WP_Comment_Query $comment_query ) {
 
 	// Unfiltered
 	if ( olgc_is_instructor() || olgc_is_author( $post_id ) ) {
-		return $clauses;
+		return;
 	}
 
 	$pc_ids = olgc_get_inaccessible_comments( get_current_user_id(), $post_id );
