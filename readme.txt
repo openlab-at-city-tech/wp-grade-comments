@@ -2,8 +2,8 @@
 Contributors: boonebgorges
 Tags: comments, grade, course, privacy
 Requires at least: 4.4
-Tested up to: 4.7
-Stable tag: 1.1.1
+Tested up to: 4.8
+Stable tag: 1.2.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
