@@ -140,7 +140,7 @@ function olgc_add_private_info_to_comment_text( $text, $comment ) {
 	$gloss = '';
 	if ( '' !== $grade && $is_private ) {
 		$gloss = __( 'NOTE: Private response and grade are visible only to instructors and to the post\'s author.', 'wp-grade-comments' );
-	} else if ( $is_private ) {
+	} elseif ( $is_private ) {
 		$gloss = __( 'NOTE: Private response is visible only to instructors and to the post\'s author.', 'wp-grade-comments' );
 	}
 
@@ -164,7 +164,7 @@ function olgc_add_private_label_to_comment_reply_link( $args, $comment ) {
 	$is_private = get_comment_meta( $comment->comment_ID, 'olgc_is_private', true );
 	if ( $is_private ) {
 		$args['reply_text']    = '(Private) ' . $args['reply_text'];
-		$args['reply_to_text'] =  '(Private) ' . $args['reply_to_text'];
+		$args['reply_to_text'] = '(Private) ' . $args['reply_to_text'];
 	}
 
 	return $args;
@@ -259,15 +259,14 @@ function olgc_get_inaccessible_comments( $user_id, $post_id = 0 ) {
 			continue;
 		}
 
-                if ( $user_id ) {
-                        $comment_post = get_post( $private_comment->comment_post_ID );
-                        if ( $user_id == $comment_post->post_author ) {
-                                continue;
-                        }
-                }
+		if ( $user_id ) {
+			$comment_post = get_post( $private_comment->comment_post_ID );
+			if ( $user_id == $comment_post->post_author ) {
+				continue;
+			}
+		}
 
 		$pc_ids[] = $private_comment->comment_ID;
-
 	}
 
 	$pc_ids = wp_parse_id_list( $pc_ids );
@@ -391,7 +390,7 @@ function olgc_prevent_private_comments_from_creating_bp_activity_items( $comment
 	if ( 'comment_post' === current_action() ) {
 		remove_action( 'comment_post', 'bp_blogs_record_comment', 10, 2 );
 		remove_action( 'comment_post', 'bp_activity_post_type_comment', 10, 2 );
-	} else if ( 'edit_comment' === current_action() ) {
+	} elseif ( 'edit_comment' === current_action() ) {
 		remove_action( 'edit_comment', 'bp_blogs_record_comment', 10 );
 		remove_action( 'edit_comment', 'bp_activity_post_type_comment', 10 );
 	}
