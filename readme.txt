@@ -2,7 +2,7 @@
 Contributors: boonebgorges
 Tags: comments, grade, course, privacy
 Requires at least: 4.4
-Tested up to: 4.8
+Tested up to: 4.9
 Stable tag: 1.2.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -30,6 +30,9 @@ This plugin was developed for the [https://openlab.citytech.cuny.edu](City Tech 
 3. Grades are visible on Dashboard > Posts.
 
 == Changelog ==
+
+= 1.2.1 =
+* Fix bug that prevented 0 grades from showing on Dashboard.
 
 = 1.2.0 =
 * Better support for query edge cases.
