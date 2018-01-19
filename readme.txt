@@ -33,6 +33,7 @@ This plugin was developed for the [https://openlab.citytech.cuny.edu](City Tech 
 
 = 1.3.0 =
 * Add show/hide toggle for private comments.
+* Improve internationalization support.
 * Fix bug that prevented 0 grades from showing on Dashboard.
 
 = 1.2.0 =
