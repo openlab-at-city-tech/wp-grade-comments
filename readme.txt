@@ -31,6 +31,9 @@ This plugin was developed for the [https://openlab.citytech.cuny.edu](City Tech 
 
 == Changelog ==
 
+= 1.3.1 =
+* Allow empty comment when a grade is posted.
+
 = 1.3.0 =
 * Add show/hide toggle for private comments.
 * Improve internationalization support.
