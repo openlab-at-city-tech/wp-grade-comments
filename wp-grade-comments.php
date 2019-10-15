@@ -37,9 +37,18 @@ function olgc_leave_comment_checkboxes() {
 		return;
 	}
 
+	/**
+	 * Filters whether the 'Private' comment checkbox should be checked by default.
+	 *
+	 * @since 1.4.0
+	 *
+	 * @param bool
+	 */
+	$default_is_private = apply_filters( 'olgc_default_is_private', false );
+
 	?>
 	<div class="olgc-checkboxes">
-		<label for="olgc-private-comment"><?php _e( 'Make this comment private.', 'wp-grade-comments' ) ?></label> <input type="checkbox" name="olgc-private-comment" id="olgc-private-comment" value="1" />
+		<label for="olgc-private-comment"><?php _e( 'Make this comment private.', 'wp-grade-comments' ) ?></label> <input type="checkbox" name="olgc-private-comment" id="olgc-private-comment" value="1" <?php checked( $default_is_private ); ?> />
 		<br />
 		<label for="olgc-add-a-grade"><?php _e( 'Add a grade.', 'wp-grade-comments' ) ?></label> <input type="checkbox" name="olgc-add-a-grade" id="olgc-add-a-grade" value="1" />
 		<br />
