@@ -473,11 +473,11 @@ add_action( 'transition_comment_status', 'olgc_prevent_private_comments_from_cre
  */
 function olgc_add_comment_classes( $classes, $class, $comment_id ) {
 	if ( get_comment_meta( $comment_id, 'olgc_is_private', true ) ) {
-		$classes[] = 'comment-private';
+		$classes[] = 'comment-is-private';
 	}
 
 	if ( get_comment_meta( $comment_id, 'olgc_grade', true ) ) {
-		$classes[] = 'comment-grade';
+		$classes[] = 'comment-has-grade';
 	}
 
 	return $classes;
