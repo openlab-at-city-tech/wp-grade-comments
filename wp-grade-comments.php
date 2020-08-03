@@ -294,6 +294,16 @@ function olgc_get_inaccessible_comments( $user_id, $post_id = 0 ) {
 			}
 		}
 
+		// Comment authors should see private replies.
+		if ( ! empty( $private_comment->comment_parent ) ) {
+			$parent_id      = (int) $private_comment->comment_parent;
+			$parent_comment = get_comment( $parent_id );
+
+			if ( $user_id == $parent_comment->user_id ) {
+				continue;
+			}
+		}
+
 		$pc_ids[] = $private_comment->comment_ID;
 	}
 
