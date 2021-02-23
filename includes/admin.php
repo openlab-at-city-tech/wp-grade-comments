@@ -162,6 +162,8 @@ function olgc_add_grade_column_content_to_editcomments( $column_name, $comment_i
  * @param WP_Comment $comment Comment object.
  */
 function olgc_register_meta_boxes( $comment ) {
+	$comment_post = get_post( $comment->comment_post_ID );
+
 	wp_enqueue_style( 'olgc-meta-boxes', OLGC_PLUGIN_URL . '/assets/css/meta-boxes.css' );
 
 	if ( olgc_is_instructor() || ( ! empty( $comment_post->post_author ) && $comment_post->post_author == get_current_user_id() ) ) {
