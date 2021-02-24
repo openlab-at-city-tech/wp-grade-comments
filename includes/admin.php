@@ -263,3 +263,63 @@ function olgc_save_comment_extras( $comment_id ) {
 		update_comment_meta( $comment_id, 'olgc_is_private', $private );
 	}
 }
+
+/**
+ * Show activation admin notice.
+ *
+ * @return void
+ */
+function olgc_admin_notice() {
+	if ( ! current_user_can( 'manage_options' ) ) {
+		return;
+	}
+
+	// Notice was dissmised.
+	if ( get_option( 'olgc_notice_dismissed' ) ) {
+		return;
+	}
+
+	// Groan
+	$dismiss_url = $_SERVER['REQUEST_URI'];
+	$nonce       = wp_create_nonce( 'olgc_notice_dismiss' );
+	$dismiss_url = add_query_arg( 'olgc-notice-dismiss', '1', $dismiss_url );
+	$dismiss_url = add_query_arg( '_wpnonce', $nonce, $dismiss_url );
+
+	?>
+	<style type="text/css">
+		.olgc-notice-message p {
+			display: flex;
+		}
+		.olgc-notice-message-dismiss {
+			align-self: center;
+			margin-left: 8px;
+		}
+	</style>
+	<div class="notice notice-warning fade olgc-notice-message">
+		<p><span><?php esc_html_e( 'Please note: The WP Grade Comments plugin allows all Site Administrators to add, view, and edit private comments and grades.', 'wp-grade-comments' ); ?> <strong><?php esc_html_e( 'If you deactivate this plugin, any private comments made while the plugin was activated will become visible on your site to anyone who can view the site.', 'wp-grade-comments' ); ?></strong></span>
+		<a class="olgc-notice-message-dismiss" href="<?php echo esc_url( $dismiss_url ); ?>"><?php esc_html_e( 'Dismiss', 'wp-grade-comments' ); ?></a>
+		</p>
+	</div>
+	<?php
+}
+add_action( 'admin_notices', 'olgc_admin_notice' );
+
+/**
+ * Catch notice dismissals.
+ *
+ * @return void
+ */
+function olgc_catch_notice_dismissals() {
+	if ( ! current_user_can( 'manage_options' ) ) {
+		return;
+	}
+
+	if ( empty( $_GET['olgc-notice-dismiss'] ) ) {
+		return;
+	}
+
+	check_admin_referer( 'olgc_notice_dismiss' );
+
+	update_option( 'olgc_notice_dismissed', 1 );
+}
+add_action( 'admin_init', 'olgc_catch_notice_dismissals' );

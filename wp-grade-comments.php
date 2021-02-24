@@ -28,6 +28,19 @@ function olgc_load_plugin_textdomain() {
 add_action( 'init', 'olgc_load_plugin_textdomain' );
 
 /**
+ * The plugin activation action.
+ *
+ * @return void
+ */
+function olgc_activate() {
+	// Set up admin notice flag.
+	if ( ! get_option( 'olgc_notice_dismissed' ) ) {
+		update_option( 'olgc_notice_dismissed', '0' );
+	}
+}
+register_activation_hook( __FILE__, 'olgc_activate' );
+
+/**
  * Markup for the checkboxes on the Leave a Comment section.
  *
  * @since 1.0.0
