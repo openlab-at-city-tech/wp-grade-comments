@@ -274,6 +274,10 @@ function olgc_admin_notice() {
 		return;
 	}
 
+	if ( ! apply_filters( 'olgc_display_notices', true ) ) {
+		return;
+	}
+
 	// Notice was dissmised.
 	if ( get_option( 'olgc_notice_dismissed' ) ) {
 		return;
@@ -323,3 +327,25 @@ function olgc_catch_notice_dismissals() {
 	update_option( 'olgc_notice_dismissed', 1 );
 }
 add_action( 'admin_init', 'olgc_catch_notice_dismissals' );
+
+/**
+ * Display confirmation modal on the plugin deactivation.
+ *
+ * @param string $plugin_file Path to the plugin file relative to the plugins directory.
+ * @return void
+ */
+function olgc_deactivation_notice( $plugin_file ) {
+	if ( 'wp-grade-comments/wp-grade-comments.php' !== $plugin_file ) {
+		return;
+	}
+
+	if ( ! apply_filters( 'olgc_display_notices', true ) ) {
+		return;
+	}
+
+	wp_enqueue_script( 'oglc-deactivation', OLGC_PLUGIN_URL . 'assets/js/deactivation.js', [], false, true );
+	wp_localize_script( 'oglc-deactivation', 'OLGCDeactivate', [
+		'message' => esc_html__( 'If you deactivate this plugin, any private comments made while the plugin was activated will become visible on your site to anyone who can view the site.', 'wp-grade-comments' ),
+	] );
+}
+add_action( 'after_plugin_row', 'olgc_deactivation_notice' );
