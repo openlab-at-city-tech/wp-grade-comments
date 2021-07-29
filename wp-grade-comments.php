@@ -276,9 +276,14 @@ function olgc_get_inaccessible_comments( $user_id, $post_id = 0 ) {
 
 	$comment_args = array(
 		'meta_query' => array(
+			'relation' => 'OR',
 			array(
 				'key'   => 'olgc_is_private',
 				'value' => '1',
+			),
+			array(
+				'key'      => 'olgc_grade',
+				'operator' => 'EXISTS',
 			),
 		),
 		'status' => 'any',
@@ -292,8 +297,12 @@ function olgc_get_inaccessible_comments( $user_id, $post_id = 0 ) {
 
 	add_action( 'pre_get_comments', 'olgc_remove_private_comments' );
 
-	// Filter out the ones that are written by the logged-in user, as well
-	// as those that are attached to a post that the user is the author of
+	/**
+	 * Filter out the comments that the user should in fact have access to:
+	 * 1. Those written by the logged-in user
+	 * 2. Those attached to a post of which the logged-in user is the author
+	 * 3. Those comments that are public and non-empty but have a grade attached
+	 */
 	$pc_ids = array();
 	foreach ( $private_comments as $private_comment ) {
 		if ( $user_id && ! empty( $private_comment->user_id ) && $user_id == $private_comment->user_id ) {
@@ -313,6 +322,13 @@ function olgc_get_inaccessible_comments( $user_id, $post_id = 0 ) {
 			$parent_comment = get_comment( $parent_id );
 
 			if ( $user_id == $parent_comment->user_id ) {
+				continue;
+			}
+		}
+
+		if ( get_comment_meta( $private_comment->comment_ID, 'olgc_grade', true ) ) {
+			$private = get_comment_meta( $private_comment->comment_ID, 'olgc_is_private', true );
+			if ( ! $private && ! empty( $private_comment->comment_content ) ) {
 				continue;
 			}
 		}
