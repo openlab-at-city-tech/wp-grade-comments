@@ -3,7 +3,7 @@ Contributors: boonebgorges
 Tags: comments, grade, course, privacy
 Requires at least: 4.4
 Tested up to: 5.8
-Stable tag: 1.4.0
+Stable tag: 1.4.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -30,6 +30,10 @@ This plugin was developed for the [https://openlab.citytech.cuny.edu](City Tech 
 3. Grades are visible on Dashboard > Posts.
 
 == Changelog ==
+
+= 1.4.1 =
+* Hide comments from public feeds/streams when there's only a grade and no content.
+
 = 1.4.0 =
 * Introduce notice that educates admin about the effects of deactivating the plugin when there are private comments.
 * Improve compatibility between form elements and theme styles.
