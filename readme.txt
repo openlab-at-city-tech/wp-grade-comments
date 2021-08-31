@@ -31,6 +31,9 @@ This plugin was developed for the [https://openlab.citytech.cuny.edu](City Tech 
 
 == Changelog ==
 
+= 1.4.4 =
+* Ensure that empty grades are not recorded in the database, which could cause visibility issues.
+
 = 1.4.3 =
 * Avoid fatal errors when checking compatibility with openlab-private-comments.
 
