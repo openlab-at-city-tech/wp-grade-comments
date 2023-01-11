@@ -134,6 +134,11 @@ add_action( 'wp_insert_comment', 'olgc_insert_comment', 10, 2 );
 function olgc_add_private_info_to_comment_text( $text, $comment ) {
 	global $pagenow;
 
+	// Don't ever add on feeds.
+	if ( is_feed() || is_comment_feed() ) {
+		return $text;
+	}
+
 	// Grade has its own column on edit-comments.php.
 	$grade = '';
 	$grade_text = '';
