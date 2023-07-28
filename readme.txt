@@ -31,6 +31,11 @@ This plugin was developed for the [https://openlab.citytech.cuny.edu](City Tech 
 
 == Changelog ==
 
+= 1.5.0 =
+* Allow post authors to post private comments.
+* Ensure that comments are private if there's a grade attached.
+* Don't show the "Comment (Private)" UI if the comment content is empty.
+
 = 1.4.6 =
 * More flexible sanitization of comment content.
 * Ensure that a grade of 0 can be submitted.
